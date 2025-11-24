@@ -1,0 +1,1 @@
+En este directorio van a estar los archivos de ejemplo para para el proyecto.

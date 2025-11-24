@@ -15,22 +15,29 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 switch (opcion)
                 {
                     case "1":
-                        //AgregarTarea();
-                        Console.WriteLine("Funcionalidad 'Agregar Tarea' no implementada.");
+                        GestorArchivos.NewFile();
                         break;
                     case "2":
-                        //ListarTareas();
-                        Console.WriteLine("Funcionalidad 'Listar Tareas' no implementada.");
+                        //ReadFile();
+                        Console.WriteLine("Funcionalidad 'ReadFile' no implementada.");
                         break;
                     case "3":
-                        //MarcarTareaComoCompletada();
-                        Console.WriteLine("Funcionalidad 'Marcar Tarea como Completada' no implementada.");
+                        //EditFile();
+                        Console.WriteLine("Funcionalidad 'EditFile' no implementada.");
                         break;
                     case "4":
-                        //EliminarTarea();
-                        Console.WriteLine("Funcionalidad 'Eliminar Tarea' no implementada.");
+                        //DeleteFile();
+                        Console.WriteLine("Funcionalidad 'DeleteFile' no implementada.");
                         break;
                     case "5":
+                        //ConvertFile();
+                        Console.WriteLine("Funcionalidad 'ConvertFile' no implementada.");
+                        break;
+                    case "6":
+                        //EmitReport();
+                        Console.WriteLine("Funcionalidad 'EmitReport' no implementada.");
+                        break;
+                    case "0":
                         salir = true;
                         Console.WriteLine("¡Adiós!");
                         break;
@@ -50,12 +57,14 @@ namespace RussoPriottiBarberis_GestorAlumnos
         private static void MostrarMenu()
         {
             Console.Clear();
-            Console.WriteLine("\n--- Gestor de Alumnos ---");
-            Console.WriteLine("1. Agregar Alumno");
-            Console.WriteLine("2. Listar Alumnos");
-            Console.WriteLine("3. Modificar Alumno");
-            Console.WriteLine("4. Eliminar Alumno");
-            Console.WriteLine("5. Salir");
+            Console.WriteLine("\n--- Gestor de Archivos ---");
+            Console.WriteLine("1. Crear Archivo");
+            Console.WriteLine("2. Leer Archivo");
+            Console.WriteLine("3. Editar Archivo");
+            Console.WriteLine("4. Eliminar Archivo");
+            Console.WriteLine("5. Conversor de Archivos");
+            Console.WriteLine("6. Emitir Reporte");
+            Console.WriteLine("0. Salir");
             Console.Write("Selecciona una opción: ");
         }
     }
