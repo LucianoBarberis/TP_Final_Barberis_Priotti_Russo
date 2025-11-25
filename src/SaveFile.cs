@@ -48,25 +48,23 @@ namespace RussoPriottiBarberis_GestorAlumnos.src
         {
             try
             {
-                List<string> AlumnosAGuardar = new List<string>();
-                foreach (var alumno in Alumnos)
-                {
-                    AlumnosAGuardar.Add(JsonSerializer.Serialize(alumno));
-                }
-                File.WriteAllLines($"{FileName}.json", AlumnosAGuardar);
+                JsonSerializerOptions options = new JsonSerializerOptions { WriteIndented = true };
+                File.WriteAllText($"{FileName}.json", JsonSerializer.Serialize(Alumnos, options));
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error al crear el archivo: " + ex.ToString());
             }
         }
-        public static void savaInXml(List<Alumno> Alumnos, string FileName)
+        //TODO: Terminar implementacion de Save in XML
+        public static void saveInXml(List<Alumno> Alumnos, string FileName)
         {
             try
             {
                 List<string> AlumnosAGuardar = new List<string>();
                 foreach (var alumno in Alumnos)
                 {
+
                 }
                 File.WriteAllLines($"{FileName}.xml", AlumnosAGuardar);
             }

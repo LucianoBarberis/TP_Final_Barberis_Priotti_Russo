@@ -90,6 +90,6 @@ public class Alumno
 
 	public string ToCsvString()
 	{
-		return $"{Legajo},{Apellido},{Nombre},{Doc},{Email},{Tel}";
+		return $"{Legajo};{Apellido};{Nombre};{Doc};{Email};{Tel}";
 	}
 }

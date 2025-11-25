@@ -82,7 +82,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                     case "txt": SaveFile.saveInTxt(AlumnosACargar, fileName) ;break;
                     case "csv": SaveFile.saveInCsv(AlumnosACargar, fileName);break;
                     case "json": SaveFile.saveInJson(AlumnosACargar, fileName);break;
-                    case "xml": ;break;
+                    case "xml": Console.WriteLine("A Implementar");break;
                 }
             }
         }
