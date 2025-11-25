@@ -1,5 +1,4 @@
-﻿
-namespace RussoPriottiBarberis_GestorAlumnos
+﻿namespace RussoPriottiBarberis_GestorAlumnos
 {
     internal class Program
     {
