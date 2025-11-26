@@ -33,10 +33,13 @@ namespace RussoPriottiBarberis_GestorAlumnos.src
             try
             {
                 List<string> AlumnosAGuardar = new List<string>();
+
+                AlumnosAGuardar.Add("Legajo,Apellido,Nombre,Nro. Doc.,Email,Teléfono");
                 foreach (var alumno in Alumnos)
                 {
                     AlumnosAGuardar.Add(alumno.ToCsvString());
                 }
+
                 File.WriteAllLines($"{FileName}.csv", AlumnosAGuardar);
             }
             catch (Exception ex)
@@ -56,21 +59,21 @@ namespace RussoPriottiBarberis_GestorAlumnos.src
                 Console.WriteLine("Error al crear el archivo: " + ex.ToString());
             }
         }
-        //TODO: Terminar implementacion de Save in XML
+
+        // TODO: Arreglar Implementacion
         public static void saveInXml(List<Alumno> Alumnos, string FileName)
         {
             try
             {
-                List<string> AlumnosAGuardar = new List<string>();
-                foreach (var alumno in Alumnos)
+                XmlSerializer serializer = new XmlSerializer(typeof(List<Alumno>));
+                using (StreamWriter writer = new StreamWriter($"{FileName}.xml"))
                 {
-
+                    serializer.Serialize(writer, Alumnos);
                 }
-                File.WriteAllLines($"{FileName}.xml", AlumnosAGuardar);
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error al crear el archivo: " + ex.ToString());
+                Console.WriteLine("Error al crear el archivo XML: " + ex.ToString());
             }
         }
     }

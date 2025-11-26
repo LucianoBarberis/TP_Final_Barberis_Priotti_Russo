@@ -3,6 +3,7 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Threading;
 using RussoPriottiBarberis_GestorAlumnos.src;
+using System.Text.Json;
 
 namespace RussoPriottiBarberis_GestorAlumnos
 {
@@ -84,11 +85,10 @@ namespace RussoPriottiBarberis_GestorAlumnos
                     case "txt": SaveFile.saveInTxt(AlumnosACargar, fileName) ;break;
                     case "csv": SaveFile.saveInCsv(AlumnosACargar, fileName);break;
                     case "json": SaveFile.saveInJson(AlumnosACargar, fileName);break;
-                    case "xml": Console.WriteLine("A Implementar");break;
+                    case "xml": Console.WriteLine("Arreglar Implementacion");break;
                 }
             }
         }
-
         public static bool EsNombreDeArchivoValido(string fileName)
         {
             if (string.IsNullOrWhiteSpace(fileName))
@@ -114,7 +114,92 @@ namespace RussoPriottiBarberis_GestorAlumnos
         }
         public static void ReadFile()
         {
+            Alumno alumno;
+            string? fileName;
+            List<Alumno> alumnoList = new List<Alumno>();
+
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Ingrese el nombre del archivo a leer (Con extencion):");
+                fileName = Console.ReadLine();
+            } while (fileName == null || !EsNombreDeArchivoValido(fileName));
+
+            if (!fileName.Contains(".txt") && !fileName.Contains(".csv") && !fileName.Contains(".json") && !fileName.Contains(".xls"))
+            {
+                Console.WriteLine("El archivo no contiene ninguna extencion valida...");
+                return;
+            }
+
+            if (!File.Exists(fileName))
+            {
+                Console.WriteLine($"{fileName} no existe...");
+            }
             
+            if (fileName.Contains(".txt"))
+            {
+                string[] lineas = File.ReadAllLines(fileName);
+                alumnoList.Clear();
+
+                foreach (string linea in lineas)
+                {
+                    if (string.IsNullOrEmpty(linea)) continue;
+
+                    alumno = Alumno.FromTxtToObj(linea);
+                    if (alumno != null)
+                    {
+                        alumnoList.Add(alumno);
+                    }
+                }
+
+                Console.WriteLine("==============================================================");
+                Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Teléfono |");
+                foreach (Alumno alumnoToPrint in alumnoList)
+                {
+                    Console.WriteLine($"| {alumnoToPrint.Legajo} | {alumnoToPrint.Apellido} | {alumnoToPrint.Nombre} | {alumnoToPrint.Doc} | {alumnoToPrint.Email} | {alumnoToPrint.Tel}");
+                }
+                Console.WriteLine("==============================================================");
+            }
+            else if(fileName.Contains(".csv"))
+            {
+                string[] lineas = File.ReadAllLines(fileName);
+                alumnoList.Clear();
+
+                foreach (string linea in lineas)
+                {
+                    if (string.IsNullOrEmpty(linea)) continue;
+
+                    alumno = Alumno.FromCsvToObj(linea);
+                    if (alumno != null)
+                    {
+                        alumnoList.Add(alumno);
+                    }
+                }
+
+                Console.WriteLine("==============================================================");
+                // El encabezado ya esta en el archvio
+                foreach (Alumno alumnoToPrint in alumnoList)
+                {
+                    Console.WriteLine($"| {alumnoToPrint.Legajo} | {alumnoToPrint.Apellido} | {alumnoToPrint.Nombre} | {alumnoToPrint.Doc} | {alumnoToPrint.Email} | {alumnoToPrint.Tel}");
+                }
+                Console.WriteLine("==============================================================");
+            }
+            else if(fileName.Contains(".json"))
+            {
+                string json = File.ReadAllText(fileName);
+                List<Alumno> alumnosFromJson = JsonSerializer.Deserialize<List<Alumno>>(json);
+                Console.WriteLine("==============================================================");
+                Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Teléfono |");
+                foreach (Alumno alumnoToPrint in alumnosFromJson)
+                {
+                    Console.WriteLine($"| {alumnoToPrint.Legajo} | {alumnoToPrint.Apellido} | {alumnoToPrint.Nombre} | {alumnoToPrint.Doc} | {alumnoToPrint.Email} | {alumnoToPrint.Tel}");
+                }
+                Console.WriteLine("==============================================================");
+            }
+            else if(fileName.Contains(".xls"))
+            {
+                // To Do
+            }
         }
         public static void EditFile()
         {

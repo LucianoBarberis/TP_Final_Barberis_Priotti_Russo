@@ -18,8 +18,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                         GestorArchivos.NewFile();
                         break;
                     case "2":
-                        //ReadFile();
-                        Console.WriteLine("Funcionalidad 'ReadFile' no implementada.");
+                        GestorArchivos.ReadFile();
                         break;
                     case "3":
                         //EditFile();

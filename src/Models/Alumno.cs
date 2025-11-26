@@ -4,12 +4,12 @@ using System.Text.RegularExpressions;
 
 public class Alumno
 {
-	public string Legajo { get; private set; }
-	public string Apellido { get; private set; }
-	public string Nombre { get; private set; }
-	public string Doc { get; private set; }
-	public string Email { get; private set; }
-	public string Tel { get; private set; }
+	public string Legajo { get; set; }
+	public string Apellido { get; set; }
+	public string Nombre { get; set; }
+	public string Doc { get; set; }
+	public string Email { get; set; }
+	public string Tel { get; set; }
 
 	public Alumno(string legajo, string apellido, string nombre, string doc, string email, string tel)
 	{
@@ -74,14 +74,64 @@ public class Alumno
 
         return esValido;
     }
-
 	public override string ToString()
 	{
-		return $"Legajo: {Legajo}, Apellido: {Apellido}, Nombre: {Nombre}, Documento: {Doc}, Email: {Email}, Teléfono: {Tel}";
+		return $"{Legajo} | {Apellido} | {Nombre} | {Doc} | {Email} | {Tel}";
 	}
-
 	public string ToCsvString()
 	{
-		return $"{Legajo};{Apellido};{Nombre};{Doc};{Email};{Tel}";
+		return $"{Legajo},{Apellido},{Nombre},{Doc},{Email},{Tel}";
 	}
+    public static Alumno FromTxtToObj(string linea)
+    {
+        string[] partes = linea.Split(" | ");
+        if (partes.Length == 0 || partes.Length != 6) 
+        {
+            Console.WriteLine("Error: Linea Corrupta");
+            return null;
+        }
+
+        try
+        {
+            string legajo = partes[0];
+            string apellido = partes[1];
+            string nombre = partes[2];
+            string doc = partes[3];
+            string email = partes[4];
+            string tel = partes[5];
+
+            return new Alumno(legajo, apellido, nombre, doc, email, tel);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            return null;
+        }
+    }
+    public static Alumno FromCsvToObj(string linea)
+    {
+        string[] partes = linea.Split(",");
+        if (partes.Length == 0 || partes.Length != 6)
+        {
+            Console.WriteLine("Error: Linea Corrupta");
+            return null;
+        }
+
+        try
+        {
+            string legajo = partes[0];
+            string apellido = partes[1];
+            string nombre = partes[2];
+            string doc = partes[3];
+            string email = partes[4];
+            string tel = partes[5];
+
+            return new Alumno(legajo, apellido, nombre, doc, email, tel);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.ToString());
+            return null;
+        }
+    }
 }
