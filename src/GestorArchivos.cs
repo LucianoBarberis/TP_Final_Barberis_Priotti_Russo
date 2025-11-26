@@ -20,23 +20,22 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 Console.Clear();
                 Console.WriteLine("Ingrese el nombre del archivo a crear:");
                 fileName = Console.ReadLine();
-            }while (!EsNombreDeArchivoValido(fileName));
+            }while (fileName == null || !EsNombreDeArchivoValido(fileName));
             // Si da True, el nombre es valido por lo tanto lo negamos para que el bucle   continue hasta que sea válido.
 
             do
             {
                 Console.Clear();
                 Console.WriteLine("Ingrese el formato del archivo (txt/csv/json/xml):");
-                fileFormat = Console.ReadLine().ToLower();
+                string? input = Console.ReadLine();
+                fileFormat = input != null ? input.ToLower() : string.Empty;
             } while (fileFormat != "txt" && fileFormat != "csv" && fileFormat != "json" && fileFormat != "xml");
 
-            string? input;
             do
             {
                 Console.Clear();
                 Console.WriteLine($"Cantidad de alumnos a cargar en el archivo {fileName}.{fileFormat}: ");
-                input = Console.ReadLine();
-            } while (!int.TryParse(input, out cantidadAlumnos) || cantidadAlumnos <= 0);
+            } while (!int.TryParse(Console.ReadLine(), out cantidadAlumnos) || cantidadAlumnos <= 0);
 
             for (int i = 1; i <= cantidadAlumnos; i++)
             {
@@ -63,11 +62,14 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 
                 Console.WriteLine(); // Espacio para los mensajes de error
 
-                if (Alumno.ValidarYCrear(legajo, apellido, nombre, doc, email, tel, out var alumno))
+                if (Alumno.ValidarAlumno(legajo, apellido, nombre, doc, email, tel))
                 {
-                    AlumnosACargar.Add(alumno!);
-                    Console.WriteLine("\nAlumno agregado correctamente.");
-                    Thread.Sleep(2000); // Pausa para que el usuario vea la confirmación
+                    Alumno alumno = new Alumno(legajo!, apellido!, nombre!, doc!, email!, tel!);
+                    // Usamos "!" delante de cada parametrio para decirle al compilador que estas variables no son nulas ni estan vacias
+                    // ya que ya las validamos anteriormente con el metodo Validar alumno
+                    AlumnosACargar.Add(alumno);
+                    Console.WriteLine("\nPresione una tecla para seguir...");
+                    Console.ReadKey();
                 }
                 else
                 {
@@ -93,16 +95,17 @@ namespace RussoPriottiBarberis_GestorAlumnos
             {
                 return false;
             }
-            char[] caracteresInvalidos = Path.GetInvalidFileNameChars();
+
             // Comprobando si el nombre contiene alguno de los caracteres inválidos.
+            char[] caracteresInvalidos = Path.GetInvalidFileNameChars();
             if (fileName.Any(c => caracteresInvalidos.Contains(c)))
             {
                 return false;
             }
+
             // Comprobando nombres reservados de windows
             string[] nombresReservados = { "CON", "PRN", "AUX", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9" };
-            string nombreSinExtension = Path.GetFileNameWithoutExtension(fileName);
-            if (nombresReservados.Contains(nombreSinExtension.ToUpper()))
+            if (nombresReservados.Contains(fileName.ToUpper()))
             {
                 return false;
             }

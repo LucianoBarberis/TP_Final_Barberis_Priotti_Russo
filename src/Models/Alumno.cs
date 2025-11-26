@@ -11,8 +11,7 @@ public class Alumno
 	public string Email { get; private set; }
 	public string Tel { get; private set; }
 
-	// El constructor es privado para para asegurarnos crear a los alumnos en el metodo ValidaYCrear
-	private Alumno(string legajo, string apellido, string nombre, string doc, string email, string tel)
+	public Alumno(string legajo, string apellido, string nombre, string doc, string email, string tel)
 	{
 		Legajo = legajo;
 		Apellido = apellido;
@@ -22,11 +21,10 @@ public class Alumno
 		Tel = tel;
 	}
 
-    // Metodo para 
-    public static bool ValidarYCrear(string? legajo, string? apellido, string? nombre, string? doc, string? email, string? tel, out Alumno? alumno)
+    // Metodo para validar que los datos del almuno no esten vacios y el mail tenga un formato correcto
+    public static bool ValidarAlumno(string? legajo, string? apellido, string? nombre, string? doc, string? email, string? tel)
     {
         bool esValido = true;
-        alumno = null;
 
         if (string.IsNullOrWhiteSpace(legajo))
         {
@@ -72,12 +70,6 @@ public class Alumno
         {
             Console.WriteLine("- El teléfono no puede estar vacío.");
             esValido = false;
-        }
-
-        if (esValido)
-        {
-            alumno = new Alumno(legajo!, apellido!, nombre!, doc!, email!, tel!);
-            // ! Para decirle al compilador que estas variables no son nulas
         }
 
         return esValido;
