@@ -21,8 +21,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                         GestorArchivos.ReadFile();
                         break;
                     case "3":
-                        //EditFile();
-                        Console.WriteLine("Funcionalidad 'EditFile' no implementada.");
+                        GestorArchivos.EditFile();
                         break;
                     case "4":
                         GestorArchivos.DeleteFile();
