@@ -64,6 +64,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
             Console.WriteLine("5. Conversor de Archivos");
             Console.WriteLine("6. Emitir Reporte");
             Console.WriteLine("0. Salir");
+            Console.WriteLine("Pruebaa.");
             Console.Write("Selecciona una opción: ");
         }
     }
