@@ -22,7 +22,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 Console.WriteLine("Ingrese el nombre del archivo a crear:");
                 fileName = Console.ReadLine();
             }while (fileName == null || !EsNombreDeArchivoValido(fileName));
-            // Si da True, el nombre es valido por lo tanto lo negamos para que el bucle   continue hasta que sea válido.
+            // Si da True, el nombre es valido por lo tanto lo negamos para que el bucle continue hasta que sea válido.
 
             do
             {
@@ -134,13 +134,13 @@ namespace RussoPriottiBarberis_GestorAlumnos
             if (!File.Exists(fileName))
             {
                 Console.WriteLine($"{fileName} no existe...");
+                return;
             }
             
             if (fileName.Contains(".txt"))
             {
                 string[] lineas = File.ReadAllLines(fileName);
                 alumnoList.Clear();
-
                 foreach (string linea in lineas)
                 {
                     if (string.IsNullOrEmpty(linea)) continue;
@@ -196,7 +196,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 }
                 Console.WriteLine("==============================================================");
             }
-            else if(fileName.Contains(".xls"))
+            else if(fileName.Contains(".xml"))
             {
                 // To Do
             }
@@ -207,7 +207,56 @@ namespace RussoPriottiBarberis_GestorAlumnos
         }
         public static void DeleteFile()
         {
-            
+            string? fileName;
+
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("Ingrese el nombre del archivo a eliminar (con extensión):");
+                fileName = Console.ReadLine();
+            } while (fileName == null || !EsNombreDeArchivoValido(fileName));
+
+            // Verificar si existe
+            if (!File.Exists(fileName))
+            {
+                Console.WriteLine($" El archivo {fileName} no existe en el sistema.");
+                return;
+            }
+
+            // Verificamos que la extencion sea valida para evitar eliminar archivos no deseados
+            if (!fileName.Contains(".txt") && !fileName.Contains(".csv") && !fileName.Contains(".json") && !fileName.Contains(".xls"))
+            {
+                Console.WriteLine("El archivo no contiene ninguna extencion valida...");
+                return;
+            }
+
+            FileInfo infoArchivo = new FileInfo(fileName);
+            Console.WriteLine("\n=== Información del archivo ===");
+            Console.WriteLine($"Nombre completo: {infoArchivo.FullName}");
+            Console.WriteLine($"Tamaño: {infoArchivo.Length / 1024.0:F2} KB");
+            Console.WriteLine($"Fecha de creación: {infoArchivo.CreationTime}");
+            Console.WriteLine($"Última modificación: {infoArchivo.LastWriteTime}");
+
+            // Confirmación
+            Console.Write("\nEscriba CONFIRMAR para eliminar el archivo o cualquier otra cosa para cancelar: ");
+            string? confirmacion = Console.ReadLine();
+
+            if (confirmacion == "CONFIRMAR")
+            {
+                try
+                {
+                    File.Delete(fileName);
+                    Console.WriteLine(" Archivo eliminado con éxito.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($" Error al eliminar el archivo: {ex.Message}");
+                }
+            }
+            else
+            {
+                Console.WriteLine(" Operación cancelada. Volviendo al menú principal...");
+            }
         }
 
     }

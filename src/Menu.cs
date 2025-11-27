@@ -25,8 +25,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                         Console.WriteLine("Funcionalidad 'EditFile' no implementada.");
                         break;
                     case "4":
-                        //DeleteFile();
-                        Console.WriteLine("Funcionalidad 'DeleteFile' no implementada.");
+                        GestorArchivos.DeleteFile();
                         break;
                     case "5":
                         //ConvertFile();
@@ -64,7 +63,6 @@ namespace RussoPriottiBarberis_GestorAlumnos
             Console.WriteLine("5. Conversor de Archivos");
             Console.WriteLine("6. Emitir Reporte");
             Console.WriteLine("0. Salir");
-            Console.WriteLine("Pruebaa.");
             Console.Write("Selecciona una opción: ");
         }
     }
