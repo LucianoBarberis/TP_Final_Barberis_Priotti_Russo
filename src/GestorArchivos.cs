@@ -196,6 +196,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                     }
                 }
 
+
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Teléfono |");
                 for (int i = 0; i < alumnoList.Count; i++)
@@ -226,8 +227,8 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 }
                 alumnoList.RemoveAt(0); // Eliminamos el encabezado
                 Console.WriteLine("==============================================================");
-                Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Teléfono |");
-                for (int i = 0; i < alumnoList.Count; i++)
+                Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Telefono |");
+                for (int i = 1; i < alumnoList.Count; i++)
                 {
                     Console.WriteLine($"| {alumnoList[i].Legajo} | {alumnoList[i].Apellido} | {alumnoList[i].Nombre} | {alumnoList[i].Doc} | {alumnoList[i].Email} | {alumnoList[i].Tel}");
                     if ((i + 1) % 20 == 0)
@@ -283,7 +284,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
             // Cargar todos los registros en memoria
             alumnosEnMemoria = Conversor.FromFileToObj(fileName);
 
-            if (formatoOriginal == string.Empty)
+            if (!EsFormatoValido(fileName))
             {
                 Console.WriteLine("\nPresione una tecla para volver al menú principal...");
                 Console.ReadKey();
