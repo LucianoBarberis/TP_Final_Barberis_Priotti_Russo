@@ -101,7 +101,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 Console.WriteLine($"{fileName} no existe...");
                 return null;
             }
-
+            
             if (fileName.EndsWith(".txt"))
             {
                 string[] lineas = File.ReadAllLines(fullPath);

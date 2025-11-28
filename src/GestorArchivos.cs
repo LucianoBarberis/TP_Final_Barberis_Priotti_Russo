@@ -38,7 +38,6 @@ namespace RussoPriottiBarberis_GestorAlumnos
             {
                 Directory.CreateDirectory(FolderPath);
             }
-
             if(File.Exists(Path.Combine(FolderPath, $"{fileName}.{fileFormat}")))
             {
                 Console.WriteLine($"El Archivo {fileName}.{fileFormat} ya existe, si continuas se sobreescribira la informacio. (S/n)");
@@ -282,7 +281,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
             string fullPath = Path.Combine(FolderPath, fileName);
 
             // Cargar todos los registros en memoria
-            alumnosEnMemoria = Conversor.FromFileToObj(fullPath);
+            alumnosEnMemoria = Conversor.FromFileToObj(fileName);
 
             if (formatoOriginal == string.Empty)
             {
