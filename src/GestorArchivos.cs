@@ -9,6 +9,8 @@ namespace RussoPriottiBarberis_GestorAlumnos
 {
     public static class GestorArchivos
     {
+        public const string FolderPath = "Archivos";
+
         public static void NewFile()
         {
             List<Alumno> AlumnosACargar = new List<Alumno>();
@@ -31,6 +33,20 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 string? input = Console.ReadLine();
                 fileFormat = input != null ? input.ToLower() : string.Empty;
             } while (fileFormat != "txt" && fileFormat != "csv" && fileFormat != "json" && fileFormat != "xml");
+
+            if (!Directory.Exists(FolderPath))
+            {
+                Directory.CreateDirectory(FolderPath);
+            }
+
+            if(File.Exists(Path.Combine(FolderPath, $"{fileName}.{fileFormat}")))
+            {
+                Console.WriteLine($"El Archivo {fileName}.{fileFormat} ya existe, si continuas se sobreescribira la informacio. (S/n)");
+                if(Console.ReadLine().ToLower() == "n")
+                {
+                    return;
+                }
+            }
 
             do
             {
@@ -80,13 +96,16 @@ namespace RussoPriottiBarberis_GestorAlumnos
                     i--; // Decrementamos para reintentar el ingreso del mismo alumno
                 }
 
+                string pathForSave = Path.Combine(FolderPath, fileName);
+
                 switch (fileFormat)
                 {
-                    case "txt": SaveFile.saveInTxt(AlumnosACargar, fileName) ;break;
-                    case "csv": SaveFile.saveInCsv(AlumnosACargar, fileName);break;
-                    case "json": SaveFile.saveInJson(AlumnosACargar, fileName);break;
+                    case "txt": SaveFile.saveInTxt(AlumnosACargar, pathForSave) ;break;
+                    case "csv": SaveFile.saveInCsv(AlumnosACargar, pathForSave);break;
+                    case "json": SaveFile.saveInJson(AlumnosACargar, pathForSave);break;
                     case "xml": Console.WriteLine("Arreglar Implementacion");break;
                 }
+                Console.WriteLine("Archivo Creado Correctamente!!!");
             }
         }
         public static bool EsNombreDeArchivoValido(string fileName)
@@ -112,6 +131,29 @@ namespace RussoPriottiBarberis_GestorAlumnos
 
             return true;
         }
+        public static bool EsFormatoValido(string fileName)
+        {
+            if(fileName.EndsWith(".txt"))
+            {
+                return true;
+            }
+            
+            if(fileName.EndsWith(".csv"))
+            {
+                return true;
+            }
+            
+            if(fileName.EndsWith(".json"))
+            {
+                return true;
+            }
+            
+            if(fileName.EndsWith(".xls"))
+            {
+                return true;
+            }
+            return false;
+        }
         public static void ReadFile()
         {
             Alumno alumno;
@@ -125,21 +167,23 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 fileName = Console.ReadLine();
             } while (fileName == null || !EsNombreDeArchivoValido(fileName));
 
-            if (!fileName.Contains(".txt") && !fileName.Contains(".csv") && !fileName.Contains(".json") && !fileName.Contains(".xls"))
+            if (!EsFormatoValido(fileName))
             {
                 Console.WriteLine("El archivo no contiene ninguna extencion valida...");
                 return;
             }
 
-            if (!File.Exists(fileName))
+            string fullPath = Path.Combine(FolderPath, fileName);
+
+            if (!File.Exists(fullPath))
             {
                 Console.WriteLine($"{fileName} no existe...");
                 return;
             }
             
-            if (fileName.Contains(".txt"))
+            if (fileName.EndsWith(".txt"))
             {
-                string[] lineas = File.ReadAllLines(fileName);
+                string[] lineas = File.ReadAllLines(fullPath);
                 alumnoList.Clear();
                 foreach (string linea in lineas)
                 {
@@ -160,9 +204,9 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 }
                 Console.WriteLine("==============================================================");
             }
-            else if(fileName.Contains(".csv"))
+            else if(fileName.EndsWith(".csv"))
             {
-                string[] lineas = File.ReadAllLines(fileName);
+                string[] lineas = File.ReadAllLines(fullPath);
                 alumnoList.Clear();
 
                 foreach (string linea in lineas)
@@ -184,9 +228,9 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 }
                 Console.WriteLine("==============================================================");
             }
-            else if(fileName.Contains(".json"))
+            else if(fileName.EndsWith(".json"))
             {
-                string json = File.ReadAllText(fileName);
+                string json = File.ReadAllText(fullPath);
                 List<Alumno> alumnosFromJson = JsonSerializer.Deserialize<List<Alumno>>(json);
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Teléfono |");
@@ -196,30 +240,30 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 }
                 Console.WriteLine("==============================================================");
             }
-            else if(fileName.Contains(".xml"))
+            else if(fileName.EndsWith(".xml"))
             {
                 // To Do
             }
         }
-        // --- Funcionalidad 3: Modificar Archivo Existente (Método Principal) ---
         public static void EditFile()
         {
             Console.Clear();
             string? fileName;
-
             List<Alumno> alumnosEnMemoria = new List<Alumno>();
             string formatoOriginal = string.Empty;
             bool cambiosRealizados = false;
 
-            // 1. Solicitar el nombre del archivo a modificar
+            // Solicitar el nombre del archivo a modificar
             do
             {
                 Console.WriteLine("Ingrese el nombre del archivo a modificar (con extensión):");
                 fileName = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(fileName));
 
+            string fullPath = Path.Combine(FolderPath, fileName);
+
             // 2. Cargar todos los registros en memoria
-            (alumnosEnMemoria, formatoOriginal) = LoadAlumnosFromFile(fileName);
+            (alumnosEnMemoria, formatoOriginal) = LoadAlumnosFromFile(fullPath);
 
             if (formatoOriginal == string.Empty)
             {
@@ -257,7 +301,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                         cambiosRealizados = true;
                         break;
                     case "4":
-                        SaveFileInOriginalFormat(alumnosEnMemoria, fileName, formatoOriginal);
+                        SaveFileInOriginalFormat(alumnosEnMemoria, fullPath, formatoOriginal);
                         salirDeEdicion = true;
                         break;
                     case "5":
@@ -284,10 +328,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 }
             }
         }
-
-        // --- FUNCIONES AUXILIARES NECESARIAS ---
-
-        // Esta función es vital para cargar el archivo y debe ser 'public static'
+        // Funciones Auxiliares para EditFile
         public static (List<Alumno> alumnos, string format) LoadAlumnosFromFile(string fileName)
         {
             List<Alumno> alumnoList = new List<Alumno>();
@@ -327,13 +368,11 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 {
                     format = "json";
                     string json = File.ReadAllText(fileName);
-                    // Usar System.Text.Json
-                    alumnoList = System.Text.Json.JsonSerializer.Deserialize<List<Alumno>>(json) ?? new List<Alumno>();
+                    alumnoList = JsonSerializer.Deserialize<List<Alumno>>(json) ?? new List<Alumno>();
                 }
                 else if (fileName.ToLower().EndsWith(".xml"))
                 {
                     format = "xml";
-                    // Usar System.Xml.Serialization
                     System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(List<Alumno>));
                     using (StreamReader reader = new StreamReader(fileName))
                     {
@@ -349,8 +388,6 @@ namespace RussoPriottiBarberis_GestorAlumnos
 
             return (alumnoList, format);
         }
-
-
         private static void AgregarAlumno(List<Alumno> alumnos)
         {
             string? legajo, apellido, nombre, doc, email, tel;
@@ -387,7 +424,6 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 Console.Write("Teléfono: ");
                 tel = Console.ReadLine();
 
-                // Se asume que Alumno.ValidarAlumno está implementado
                 datosValidos = Alumno.ValidarAlumno(legajo, apellido, nombre, doc, email, tel);
 
                 if (datosValidos)
@@ -404,7 +440,6 @@ namespace RussoPriottiBarberis_GestorAlumnos
 
             } while (!datosValidos);
         }
-
         private static void ModificarAlumno(List<Alumno> alumnos)
         {
             Console.Clear();
@@ -480,7 +515,6 @@ namespace RussoPriottiBarberis_GestorAlumnos
 
             Console.WriteLine($"\n✓ Alumno con legajo {alumnoAModificar.Legajo} modificado exitosamente.");
         }
-
         private static void EliminarAlumno(List<Alumno> alumnos)
         {
             Console.Clear();
@@ -518,12 +552,10 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 Console.WriteLine("\nOperación de eliminación cancelada.");
             }
         }
-
         private static void SaveFileInOriginalFormat(List<Alumno> alumnos, string fileName, string format)
         {
             try
             {
-                // Crear backup del archivo original (renombrar con sufijo .bak)
                 string backupFileName = fileName + ".bak";
                 if (File.Exists(fileName))
                 {
@@ -532,23 +564,26 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 }
 
                 // Guardar los cambios en el archivo original
+                string directory = Path.GetDirectoryName(fileName) ?? FolderPath;
                 string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
-                // Se asume que SaveFile está correctamente implementado en src/SaveFile.cs
+                string pathForSave = Path.Combine(directory, fileNameWithoutExt);
+
                 switch (format)
                 {
-                    case "txt": RussoPriottiBarberis_GestorAlumnos.src.SaveFile.saveInTxt(alumnos, fileNameWithoutExt); break;
-                    case "csv": RussoPriottiBarberis_GestorAlumnos.src.SaveFile.saveInCsv(alumnos, fileNameWithoutExt); break;
-                    case "json": RussoPriottiBarberis_GestorAlumnos.src.SaveFile.saveInJson(alumnos, fileNameWithoutExt); break;
-                    case "xml": RussoPriottiBarberis_GestorAlumnos.src.SaveFile.saveInXml(alumnos, fileNameWithoutExt); break;
+                    case "txt": SaveFile.saveInTxt(alumnos, pathForSave); break;
+                    case "csv": SaveFile.saveInCsv(alumnos, pathForSave); break;
+                    case "json": SaveFile.saveInJson(alumnos, pathForSave); break;
+                    case "xml": SaveFile.saveInXml(alumnos, pathForSave); break;
                     default: Console.WriteLine("Formato de archivo no soportado para guardar."); break;
                 }
-                Console.WriteLine($"\n✓ Archivo '{fileName}' guardado y actualizado exitosamente.");
+                Console.WriteLine($"\nArchivo '{fileName}' guardado y actualizado exitosamente.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al guardar el archivo: {ex.Message}");
             }
         }
+        
         public static void DeleteFile()
         {
             string? fileName;
@@ -560,22 +595,24 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 fileName = Console.ReadLine();
             } while (fileName == null || !EsNombreDeArchivoValido(fileName));
 
+            string fullPath = Path.Combine(FolderPath, fileName);
+
             // Verificar si existe
-            if (!File.Exists(fileName))
+            if (!File.Exists(fullPath))
             {
                 Console.WriteLine($" El archivo {fileName} no existe en el sistema.");
                 return;
             }
 
             // Verificamos que la extencion sea valida para evitar eliminar archivos no deseados
-            if (!fileName.Contains(".txt") && !fileName.Contains(".csv") && !fileName.Contains(".json") && !fileName.Contains(".xls"))
+            if (!fileName.EndsWith(".txt") && !fileName.EndsWith(".csv") && !fileName.EndsWith(".json") && !fileName.EndsWith(".xls"))
             {
                 Console.WriteLine("El archivo no contiene ninguna extencion valida...");
                 return;
             }
 
-            FileInfo infoArchivo = new FileInfo(fileName);
-            Console.WriteLine("\n=== Información del archivo ===");
+            FileInfo infoArchivo = new FileInfo(fullPath);
+            Console.WriteLine("\nInformación del archivo");
             Console.WriteLine($"Nombre completo: {infoArchivo.FullName}");
             Console.WriteLine($"Tamaño: {infoArchivo.Length / 1024.0:F2} KB");
             Console.WriteLine($"Fecha de creación: {infoArchivo.CreationTime}");
@@ -589,7 +626,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
             {
                 try
                 {
-                    File.Delete(fileName);
+                    File.Delete(fullPath);
                     Console.WriteLine(" Archivo eliminado con éxito.");
                 }
                 catch (Exception ex)

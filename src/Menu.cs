@@ -9,6 +9,9 @@ namespace RussoPriottiBarberis_GestorAlumnos
             bool salir = false;
             while (!salir)
             {
+                Console.Clear();
+                ShowFiles();
+
                 MostrarMenu();
                 string? opcion = Console.ReadLine();
                 
@@ -27,8 +30,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                         GestorArchivos.DeleteFile();
                         break;
                     case "5":
-                        //ConvertFile();
-                        Console.WriteLine("Funcionalidad 'ConvertFile' no implementada.");
+                        Conversor.ConversorMenu();
                         break;
                     case "6":
                         //EmitReport();
@@ -53,7 +55,6 @@ namespace RussoPriottiBarberis_GestorAlumnos
 
         private static void MostrarMenu()
         {
-            Console.Clear();
             Console.WriteLine("\n--- Gestor de Archivos ---");
             Console.WriteLine("1. Crear Archivo");
             Console.WriteLine("2. Leer Archivo");
@@ -63,6 +64,30 @@ namespace RussoPriottiBarberis_GestorAlumnos
             Console.WriteLine("6. Emitir Reporte");
             Console.WriteLine("0. Salir");
             Console.Write("Selecciona una opción: ");
+        }
+
+        public static void ShowFiles()
+        {
+            Console.WriteLine("--- Archivos Actuales ---");
+            if (Directory.Exists(GestorArchivos.FolderPath))
+            {
+                string[] files = Directory.GetFiles(GestorArchivos.FolderPath);
+                if (files.Length == 0)
+                {
+                    Console.WriteLine("(No hay archivos)");
+                }
+                else
+                {
+                    foreach (string file in files)
+                    {
+                        Console.WriteLine(Path.GetFileName(file));
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("(Carpeta de archivos vacía o no existe)");
+            }
         }
     }
 }
