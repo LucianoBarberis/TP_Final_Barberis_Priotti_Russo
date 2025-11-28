@@ -90,7 +90,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
             Console.WriteLine("Conversión finalizada exitosamente.");
         }
 
-        private static List<Alumno> FromFileToObj(string fileName)
+        public static List<Alumno> FromFileToObj(string fileName)
         {
             List<Alumno> alumnos = new List<Alumno>();
             Alumno alumno;

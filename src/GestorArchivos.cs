@@ -193,14 +193,20 @@ namespace RussoPriottiBarberis_GestorAlumnos
                     if (alumno != null)
                     {
                         alumnoList.Add(alumno);
+
                     }
                 }
 
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Teléfono |");
-                foreach (Alumno alumnoToPrint in alumnoList)
+                for (int i = 0; i < alumnoList.Count; i++)
                 {
-                    Console.WriteLine($"| {alumnoToPrint.Legajo} | {alumnoToPrint.Apellido} | {alumnoToPrint.Nombre} | {alumnoToPrint.Doc} | {alumnoToPrint.Email} | {alumnoToPrint.Tel}");
+                    Console.WriteLine($"| {alumnoList[i].Legajo} | {alumnoList[i].Apellido} | {alumnoList[i].Nombre} | {alumnoList[i].Doc} | {alumnoList[i].Email} | {alumnoList[i].Tel}");
+                    if ((i + 1) % 20 == 0)
+                    {
+                        Console.WriteLine("\nPresione una tecla para continuar...");
+                        Console.ReadKey();
+                    }
                 }
                 Console.WriteLine("==============================================================");
             }
@@ -219,24 +225,35 @@ namespace RussoPriottiBarberis_GestorAlumnos
                         alumnoList.Add(alumno);
                     }
                 }
-
+                alumnoList.RemoveAt(0); // Eliminamos el encabezado
                 Console.WriteLine("==============================================================");
-                // El encabezado ya esta en el archvio
-                foreach (Alumno alumnoToPrint in alumnoList)
+                Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Teléfono |");
+                for (int i = 0; i < alumnoList.Count; i++)
                 {
-                    Console.WriteLine($"| {alumnoToPrint.Legajo} | {alumnoToPrint.Apellido} | {alumnoToPrint.Nombre} | {alumnoToPrint.Doc} | {alumnoToPrint.Email} | {alumnoToPrint.Tel}");
+                    Console.WriteLine($"| {alumnoList[i].Legajo} | {alumnoList[i].Apellido} | {alumnoList[i].Nombre} | {alumnoList[i].Doc} | {alumnoList[i].Email} | {alumnoList[i].Tel}");
+                    if ((i + 1) % 20 == 0)
+                    {
+                        Console.WriteLine("\nPresione una tecla para continuar...");
+                        Console.ReadKey();
+                    }
                 }
                 Console.WriteLine("==============================================================");
             }
             else if(fileName.EndsWith(".json"))
             {
                 string json = File.ReadAllText(fullPath);
-                List<Alumno> alumnosFromJson = JsonSerializer.Deserialize<List<Alumno>>(json);
+                alumnoList.Clear();
+                alumnoList = JsonSerializer.Deserialize<List<Alumno>>(json);
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Teléfono |");
-                foreach (Alumno alumnoToPrint in alumnosFromJson)
+                for(int i = 0; i < alumnoList.Count; i++)
                 {
-                    Console.WriteLine($"| {alumnoToPrint.Legajo} | {alumnoToPrint.Apellido} | {alumnoToPrint.Nombre} | {alumnoToPrint.Doc} | {alumnoToPrint.Email} | {alumnoToPrint.Tel}");
+                    Console.WriteLine($"| {alumnoList[i].Legajo} | {alumnoList[i].Apellido} | {alumnoList[i].Nombre} | {alumnoList[i].Doc} | {alumnoList[i].Email} | {alumnoList[i].Tel}");
+                    if ((i + 1) % 20 == 0)
+                    {
+                        Console.WriteLine("\nPresione una tecla para continuar...");
+                        Console.ReadKey();
+                    }
                 }
                 Console.WriteLine("==============================================================");
             }
@@ -244,6 +261,8 @@ namespace RussoPriottiBarberis_GestorAlumnos
             {
                 // To Do
             }
+
+            Console.WriteLine("Total de alumnos: " + alumnoList.Count());
         }
         public static void EditFile()
         {
@@ -262,8 +281,8 @@ namespace RussoPriottiBarberis_GestorAlumnos
 
             string fullPath = Path.Combine(FolderPath, fileName);
 
-            // 2. Cargar todos los registros en memoria
-            (alumnosEnMemoria, formatoOriginal) = LoadAlumnosFromFile(fullPath);
+            // Cargar todos los registros en memoria
+            alumnosEnMemoria = Conversor.FromFileToObj(fullPath);
 
             if (formatoOriginal == string.Empty)
             {
@@ -301,7 +320,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                         cambiosRealizados = true;
                         break;
                     case "4":
-                        SaveFileInOriginalFormat(alumnosEnMemoria, fullPath, formatoOriginal);
+                        SaveFileInOriginalFormat(alumnosEnMemoria, fullPath);
                         salirDeEdicion = true;
                         break;
                     case "5":
@@ -328,262 +347,214 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 }
             }
         }
-        // Funciones Auxiliares para EditFile
-        public static (List<Alumno> alumnos, string format) LoadAlumnosFromFile(string fileName)
-        {
-            List<Alumno> alumnoList = new List<Alumno>();
-            string format = string.Empty;
-
-            if (!File.Exists(fileName))
+            private static void AgregarAlumno(List<Alumno> alumnos)
             {
-                Console.WriteLine($"Error: El archivo '{fileName}' no existe.");
-                return (alumnoList, format);
-            }
+                string? legajo, apellido, nombre, doc, email, tel;
+                bool datosValidos = false;
 
-            try
-            {
-                // Nota: La implementación detallada del parsing (lectura) debe estar aquí
-                // Se asume que tienes las clases JsonSerializer y XmlSerializer en tus 'using'
-                if (fileName.ToLower().EndsWith(".txt"))
+                do
                 {
-                    format = "txt";
-                    string[] lineas = File.ReadAllLines(fileName);
-                    foreach (string linea in lineas.Where(l => !string.IsNullOrEmpty(l)))
-                    {
-                        Alumno alumno = Alumno.FromTxtToObj(linea);
-                        if (alumno != null) alumnoList.Add(alumno);
-                    }
-                }
-                else if (fileName.ToLower().EndsWith(".csv"))
-                {
-                    format = "csv";
-                    string[] lineas = File.ReadAllLines(fileName).Skip(1).ToArray();
-                    foreach (string linea in lineas.Where(l => !string.IsNullOrEmpty(l)))
-                    {
-                        Alumno alumno = Alumno.FromCsvToObj(linea);
-                        if (alumno != null) alumnoList.Add(alumno);
-                    }
-                }
-                else if (fileName.ToLower().EndsWith(".json"))
-                {
-                    format = "json";
-                    string json = File.ReadAllText(fileName);
-                    alumnoList = JsonSerializer.Deserialize<List<Alumno>>(json) ?? new List<Alumno>();
-                }
-                else if (fileName.ToLower().EndsWith(".xml"))
-                {
-                    format = "xml";
-                    System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(List<Alumno>));
-                    using (StreamReader reader = new StreamReader(fileName))
-                    {
-                        alumnoList = (List<Alumno>)serializer.Deserialize(reader) ?? new List<Alumno>();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al cargar el archivo {fileName}: {ex.Message}");
-                return (new List<Alumno>(), string.Empty);
-            }
+                    Console.Clear();
+                    Console.WriteLine("--- Agregar Nuevo Alumno ---");
 
-            return (alumnoList, format);
-        }
-        private static void AgregarAlumno(List<Alumno> alumnos)
-        {
-            string? legajo, apellido, nombre, doc, email, tel;
-            bool datosValidos = false;
+                    Console.Write("Legajo: ");
+                    legajo = Console.ReadLine();
 
-            do
+                    if (alumnos.Any(a => a.Legajo == legajo))
+                    {
+                        Console.WriteLine("- Error: El legajo ya existe.");
+                        Console.WriteLine("\nPresione una tecla para reintentar...");
+                        Console.ReadKey();
+                        continue;
+                    }
+
+                    Console.Write("Apellido: ");
+                    apellido = Console.ReadLine();
+
+                    Console.Write("Nombre: ");
+                    nombre = Console.ReadLine();
+
+                    Console.Write("DNI: ");
+                    doc = Console.ReadLine();
+
+                    Console.Write("Email: ");
+                    email = Console.ReadLine();
+
+                    Console.Write("Teléfono: ");
+                    tel = Console.ReadLine();
+
+                    datosValidos = Alumno.ValidarAlumno(legajo, apellido, nombre, doc, email, tel);
+
+                    if (datosValidos)
+                    {
+                        Alumno nuevoAlumno = new Alumno(legajo!, apellido!, nombre!, doc!, email!, tel!);
+                        alumnos.Add(nuevoAlumno);
+                        Console.WriteLine($"\n Alumno {legajo} - {apellido} {nombre} agregado exitosamente.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("\nPresione una tecla para reintentar...");
+                        Console.ReadKey();
+                    }
+
+                } while (!datosValidos);
+            }
+            private static void ModificarAlumno(List<Alumno> alumnos)
             {
                 Console.Clear();
-                Console.WriteLine("--- Agregar Nuevo Alumno ---");
+                Console.WriteLine("--- Modificar Alumno Existente ---");
+                Console.Write("Ingrese el legajo del alumno a modificar: ");
+                string? legajoBusqueda = Console.ReadLine();
 
-                Console.Write("Legajo: ");
-                legajo = Console.ReadLine();
+                Alumno? alumnoAModificar = alumnos.FirstOrDefault(a => a.Legajo == legajoBusqueda);
 
-                if (alumnos.Any(a => a.Legajo == legajo))
+                if (alumnoAModificar == null)
                 {
-                    Console.WriteLine("- Error: El legajo ya existe.");
-                    Console.WriteLine("\nPresione una tecla para reintentar...");
-                    Console.ReadKey();
-                    continue;
+                    Console.WriteLine($"Error: No se encontró un alumno con el legajo '{legajoBusqueda}'.");
+                    return;
                 }
 
-                Console.Write("Apellido: ");
-                apellido = Console.ReadLine();
+                Console.WriteLine("\n--- Datos Actuales ---");
+                Console.WriteLine($"Legajo: {alumnoAModificar.Legajo}");
+                Console.WriteLine($"Apellido: {alumnoAModificar.Apellido}");
+                Console.WriteLine($"Nombre: {alumnoAModificar.Nombre}");
+                Console.WriteLine($"DNI: {alumnoAModificar.Doc}");
+                Console.WriteLine($"Email: {alumnoAModificar.Email}");
+                Console.WriteLine($"Teléfono: {alumnoAModificar.Tel}");
+                Console.WriteLine("\nPresione ENTER para mantener el valor actual o ingrese el nuevo valor.");
 
-                Console.Write("Nombre: ");
-                nombre = Console.ReadLine();
+                string? nuevoValor;
+                bool datosValidos = false;
 
-                Console.Write("DNI: ");
-                doc = Console.ReadLine();
-
-                Console.Write("Email: ");
-                email = Console.ReadLine();
-
-                Console.Write("Teléfono: ");
-                tel = Console.ReadLine();
-
-                datosValidos = Alumno.ValidarAlumno(legajo, apellido, nombre, doc, email, tel);
-
-                if (datosValidos)
+                do
                 {
-                    Alumno nuevoAlumno = new Alumno(legajo!, apellido!, nombre!, doc!, email!, tel!);
-                    alumnos.Add(nuevoAlumno);
-                    Console.WriteLine($"\n✓ Alumno {legajo} - {apellido} {nombre} agregado exitosamente.");
+                    datosValidos = true;
+
+                    // Apellido
+                    Console.Write($"Nuevo Apellido ({alumnoAModificar.Apellido}): ");
+                    nuevoValor = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(nuevoValor)) alumnoAModificar.Apellido = nuevoValor.Trim();
+                    if (string.IsNullOrWhiteSpace(alumnoAModificar.Apellido)) { Console.WriteLine("- El apellido no puede estar vacío."); datosValidos = false; }
+
+                    // Nombre
+                    Console.Write($"Nuevo Nombre ({alumnoAModificar.Nombre}): ");
+                    nuevoValor = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(nuevoValor)) alumnoAModificar.Nombre = nuevoValor.Trim();
+                    if (string.IsNullOrWhiteSpace(alumnoAModificar.Nombre)) { Console.WriteLine("- El nombre no puede estar vacío."); datosValidos = false; }
+
+                    // DNI
+                    Console.Write($"Nuevo DNI ({alumnoAModificar.Doc}): ");
+                    nuevoValor = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(nuevoValor)) alumnoAModificar.Doc = nuevoValor.Trim();
+                    if (!long.TryParse(alumnoAModificar.Doc, out _)) { Console.WriteLine("- El DNI debe ser un número válido."); datosValidos = false; }
+
+
+                    // Email
+                    Console.Write($"Nuevo Email ({alumnoAModificar.Email}): ");
+                    nuevoValor = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(nuevoValor)) alumnoAModificar.Email = nuevoValor.Trim();
+                    if (string.IsNullOrWhiteSpace(alumnoAModificar.Email)) { Console.WriteLine("- El email no puede estar vacío."); datosValidos = false; }
+                    // Se asume el uso de System.Text.RegularExpressions
+                    else if (!System.Text.RegularExpressions.Regex.IsMatch(alumnoAModificar.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$")) { Console.WriteLine("- El formato del email no es válido."); datosValidos = false; }
+
+
+                    // Teléfono
+                    Console.Write($"Nuevo Teléfono ({alumnoAModificar.Tel}): ");
+                    nuevoValor = Console.ReadLine();
+                    if (!string.IsNullOrWhiteSpace(nuevoValor)) alumnoAModificar.Tel = nuevoValor.Trim();
+                    if (string.IsNullOrWhiteSpace(alumnoAModificar.Tel)) { Console.WriteLine("- El teléfono no puede estar vacío."); datosValidos = false; }
+
+                    if (!datosValidos)
+                    {
+                        Console.WriteLine("\nError de validación. Presione una tecla para reintentar los campos inválidos...");
+                        Console.ReadKey();
+                    }
+
+                } while (!datosValidos);
+
+                Console.WriteLine($"\n✓ Alumno con legajo {alumnoAModificar.Legajo} modificado exitosamente.");
+            }
+            private static void EliminarAlumno(List<Alumno> alumnos)
+            {
+                Console.Clear();
+                Console.WriteLine("--- Eliminar Alumno ---");
+                Console.Write("Ingrese el legajo del alumno a eliminar: ");
+                string? legajoBusqueda = Console.ReadLine();
+
+                Alumno? alumnoAEliminar = alumnos.FirstOrDefault(a => a.Legajo == legajoBusqueda);
+
+                if (alumnoAEliminar == null)
+                {
+                    Console.WriteLine($"Error: No se encontró un alumno con el legajo '{legajoBusqueda}'.");
+                    return;
+                }
+
+                Console.WriteLine("\n--- Datos del Alumno a Eliminar ---");
+                Console.WriteLine($"Legajo: {alumnoAEliminar.Legajo}");
+                Console.WriteLine($"Apellido: {alumnoAEliminar.Apellido}");
+                Console.WriteLine($"Nombre: {alumnoAEliminar.Nombre}");
+                Console.WriteLine($"DNI: {alumnoAEliminar.Doc}");
+                Console.WriteLine($"Email: {alumnoAEliminar.Email}");
+                Console.WriteLine($"Teléfono: {alumnoAEliminar.Tel}");
+
+                // Solicitar confirmación
+                Console.Write("\n¿Está seguro que desea eliminar este alumno? (S/N): ");
+                string? confirmacion = Console.ReadLine();
+
+                if (confirmacion != null && confirmacion.Trim().ToUpper() == "S")
+                {
+                    alumnos.Remove(alumnoAEliminar);
+                    Console.WriteLine($"\n✓ Alumno con legajo {alumnoAEliminar.Legajo} eliminado exitosamente.");
                 }
                 else
                 {
-                    Console.WriteLine("\nPresione una tecla para reintentar...");
-                    Console.ReadKey();
+                    Console.WriteLine("\nOperación de eliminación cancelada.");
                 }
-
-            } while (!datosValidos);
-        }
-        private static void ModificarAlumno(List<Alumno> alumnos)
-        {
-            Console.Clear();
-            Console.WriteLine("--- Modificar Alumno Existente ---");
-            Console.Write("Ingrese el legajo del alumno a modificar: ");
-            string? legajoBusqueda = Console.ReadLine();
-
-            Alumno? alumnoAModificar = alumnos.FirstOrDefault(a => a.Legajo == legajoBusqueda);
-
-            if (alumnoAModificar == null)
-            {
-                Console.WriteLine($"Error: No se encontró un alumno con el legajo '{legajoBusqueda}'.");
-                return;
             }
-
-            Console.WriteLine("\n--- Datos Actuales ---");
-            Console.WriteLine($"Legajo: {alumnoAModificar.Legajo}");
-            Console.WriteLine($"Apellido: {alumnoAModificar.Apellido}");
-            Console.WriteLine($"Nombre: {alumnoAModificar.Nombre}");
-            Console.WriteLine($"DNI: {alumnoAModificar.Doc}");
-            Console.WriteLine($"Email: {alumnoAModificar.Email}");
-            Console.WriteLine($"Teléfono: {alumnoAModificar.Tel}");
-            Console.WriteLine("\nPresione ENTER para mantener el valor actual o ingrese el nuevo valor.");
-
-            string? nuevoValor;
-            bool datosValidos = false;
-
-            do
+            private static void SaveFileInOriginalFormat(List<Alumno> alumnos, string fileName)
             {
-                datosValidos = true;
-
-                // Apellido
-                Console.Write($"Nuevo Apellido ({alumnoAModificar.Apellido}): ");
-                nuevoValor = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(nuevoValor)) alumnoAModificar.Apellido = nuevoValor.Trim();
-                if (string.IsNullOrWhiteSpace(alumnoAModificar.Apellido)) { Console.WriteLine("- El apellido no puede estar vacío."); datosValidos = false; }
-
-                // Nombre
-                Console.Write($"Nuevo Nombre ({alumnoAModificar.Nombre}): ");
-                nuevoValor = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(nuevoValor)) alumnoAModificar.Nombre = nuevoValor.Trim();
-                if (string.IsNullOrWhiteSpace(alumnoAModificar.Nombre)) { Console.WriteLine("- El nombre no puede estar vacío."); datosValidos = false; }
-
-                // DNI
-                Console.Write($"Nuevo DNI ({alumnoAModificar.Doc}): ");
-                nuevoValor = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(nuevoValor)) alumnoAModificar.Doc = nuevoValor.Trim();
-                if (!long.TryParse(alumnoAModificar.Doc, out _)) { Console.WriteLine("- El DNI debe ser un número válido."); datosValidos = false; }
-
-
-                // Email
-                Console.Write($"Nuevo Email ({alumnoAModificar.Email}): ");
-                nuevoValor = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(nuevoValor)) alumnoAModificar.Email = nuevoValor.Trim();
-                if (string.IsNullOrWhiteSpace(alumnoAModificar.Email)) { Console.WriteLine("- El email no puede estar vacío."); datosValidos = false; }
-                // Se asume el uso de System.Text.RegularExpressions
-                else if (!System.Text.RegularExpressions.Regex.IsMatch(alumnoAModificar.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$")) { Console.WriteLine("- El formato del email no es válido."); datosValidos = false; }
-
-
-                // Teléfono
-                Console.Write($"Nuevo Teléfono ({alumnoAModificar.Tel}): ");
-                nuevoValor = Console.ReadLine();
-                if (!string.IsNullOrWhiteSpace(nuevoValor)) alumnoAModificar.Tel = nuevoValor.Trim();
-                if (string.IsNullOrWhiteSpace(alumnoAModificar.Tel)) { Console.WriteLine("- El teléfono no puede estar vacío."); datosValidos = false; }
-
-                if (!datosValidos)
+                try
                 {
-                    Console.WriteLine("\nError de validación. Presione una tecla para reintentar los campos inválidos...");
-                    Console.ReadKey();
+                    string backupFileName = fileName + ".bak";
+                    if (File.Exists(fileName))
+                    {
+                        File.Copy(fileName, backupFileName, true);
+                        Console.WriteLine($"\nCopia de seguridad creada: {backupFileName}");
+                    }
+
+                    // Guardar los cambios en el archivo original
+                    string directory = Path.GetDirectoryName(fileName) ?? FolderPath;
+                    string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
+                    string pathForSave = Path.Combine(directory, fileNameWithoutExt);
+
+
+                    if(fileName.EndsWith(".txt"))
+                    {
+                        SaveFile.saveInTxt(alumnos, pathForSave);
+                    }
+                    else if(fileName.EndsWith(".csv"))
+                    {
+                        SaveFile.saveInCsv(alumnos, pathForSave);
+                    }
+                    else if (fileName.EndsWith(".json"))
+                    {
+                        SaveFile.saveInJson(alumnos, pathForSave);
+                    }
+                    else if (fileName.EndsWith(".xml"))
+                    {
+                        SaveFile.saveInXml(alumnos, pathForSave);
+                    } else
+                    {
+                        Console.WriteLine("Formato de archivo no soportado para guardar.");
+                    }
+
+                    Console.WriteLine($"\nArchivo '{fileName}' guardado y actualizado exitosamente.");
                 }
-
-            } while (!datosValidos);
-
-            Console.WriteLine($"\n✓ Alumno con legajo {alumnoAModificar.Legajo} modificado exitosamente.");
-        }
-        private static void EliminarAlumno(List<Alumno> alumnos)
-        {
-            Console.Clear();
-            Console.WriteLine("--- Eliminar Alumno ---");
-            Console.Write("Ingrese el legajo del alumno a eliminar: ");
-            string? legajoBusqueda = Console.ReadLine();
-
-            Alumno? alumnoAEliminar = alumnos.FirstOrDefault(a => a.Legajo == legajoBusqueda);
-
-            if (alumnoAEliminar == null)
-            {
-                Console.WriteLine($"Error: No se encontró un alumno con el legajo '{legajoBusqueda}'.");
-                return;
-            }
-
-            Console.WriteLine("\n--- Datos del Alumno a Eliminar ---");
-            Console.WriteLine($"Legajo: {alumnoAEliminar.Legajo}");
-            Console.WriteLine($"Apellido: {alumnoAEliminar.Apellido}");
-            Console.WriteLine($"Nombre: {alumnoAEliminar.Nombre}");
-            Console.WriteLine($"DNI: {alumnoAEliminar.Doc}");
-            Console.WriteLine($"Email: {alumnoAEliminar.Email}");
-            Console.WriteLine($"Teléfono: {alumnoAEliminar.Tel}");
-
-            // Solicitar confirmación
-            Console.Write("\n¿Está seguro que desea eliminar este alumno? (S/N): ");
-            string? confirmacion = Console.ReadLine();
-
-            if (confirmacion != null && confirmacion.Trim().ToUpper() == "S")
-            {
-                alumnos.Remove(alumnoAEliminar);
-                Console.WriteLine($"\n✓ Alumno con legajo {alumnoAEliminar.Legajo} eliminado exitosamente.");
-            }
-            else
-            {
-                Console.WriteLine("\nOperación de eliminación cancelada.");
-            }
-        }
-        private static void SaveFileInOriginalFormat(List<Alumno> alumnos, string fileName, string format)
-        {
-            try
-            {
-                string backupFileName = fileName + ".bak";
-                if (File.Exists(fileName))
+                catch (Exception ex)
                 {
-                    File.Copy(fileName, backupFileName, true);
-                    Console.WriteLine($"\nCopia de seguridad creada: {backupFileName}");
+                    Console.WriteLine($"Error al guardar el archivo: {ex.Message}");
                 }
-
-                // Guardar los cambios en el archivo original
-                string directory = Path.GetDirectoryName(fileName) ?? FolderPath;
-                string fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileName);
-                string pathForSave = Path.Combine(directory, fileNameWithoutExt);
-
-                switch (format)
-                {
-                    case "txt": SaveFile.saveInTxt(alumnos, pathForSave); break;
-                    case "csv": SaveFile.saveInCsv(alumnos, pathForSave); break;
-                    case "json": SaveFile.saveInJson(alumnos, pathForSave); break;
-                    case "xml": SaveFile.saveInXml(alumnos, pathForSave); break;
-                    default: Console.WriteLine("Formato de archivo no soportado para guardar."); break;
-                }
-                Console.WriteLine($"\nArchivo '{fileName}' guardado y actualizado exitosamente.");
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al guardar el archivo: {ex.Message}");
-            }
-        }
-        
         public static void DeleteFile()
         {
             string? fileName;
