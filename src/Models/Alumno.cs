@@ -111,7 +111,7 @@ public class Alumno
     public static Alumno FromCsvToObj(string linea)
     {
         string[] partes = linea.Split(",");
-        if (partes.Length == 0 || partes.Length != 6)
+        if (partes.Length != 6)
         {
             Console.WriteLine("Error: Linea Corrupta");
             return null;

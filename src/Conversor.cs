@@ -30,7 +30,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
 
             if(alumnos == null || alumnos.Count == 0)
             {
-                Console.WriteLine("Error: No se pudieron cargar alumnos o el archivo está vacío.");
+                Console.WriteLine("Error: No se pudieron cargar alumnos o el archivo esta vaci�o.");
                 return;
             }
 

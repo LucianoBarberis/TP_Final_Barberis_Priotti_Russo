@@ -228,7 +228,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 alumnoList.RemoveAt(0); // Eliminamos el encabezado
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Telefono |");
-                for (int i = 1; i < alumnoList.Count; i++)
+                for (int i = 0; i < alumnoList.Count; i++)
                 {
                     Console.WriteLine($"| {alumnoList[i].Legajo} | {alumnoList[i].Apellido} | {alumnoList[i].Nombre} | {alumnoList[i].Doc} | {alumnoList[i].Email} | {alumnoList[i].Tel}");
                     if ((i + 1) % 20 == 0)
@@ -534,6 +534,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                     }
                     else if(fileName.EndsWith(".csv"))
                     {
+                        alumnos.RemoveAt(0); // Eliminamos el encabezado ya que en saveInCsv se va a agregar nuevamente
                         SaveFile.saveInCsv(alumnos, pathForSave);
                     }
                     else if (fileName.EndsWith(".json"))

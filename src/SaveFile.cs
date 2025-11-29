@@ -21,7 +21,6 @@ namespace RussoPriottiBarberis_GestorAlumnos.src
                     AlumnosAGuardar.Add(alumno.ToString());
                 }
                 File.WriteAllLines($"{FileName}.txt" , AlumnosAGuardar);
-                // Pongo la extencion "hardcodeada" para asegurarme de que esta funcion unicamente cree txt
             }
             catch (Exception ex)
             {
