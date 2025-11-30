@@ -11,7 +11,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
         public static void ReportesMenu() 
         {
             string? fileName;
-            List<Alumno> alumnos = new List<Alumno>();
+            List<Alumno>? alumnos = new List<Alumno>();
 
             do
             {
@@ -37,18 +37,10 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 return;
             }
 
-            if(fileName.EndsWith(".csv"))
-            {
-                alumnos.RemoveAt(0); //Eliminamos el encabezado en caso que sea un csv
-            }
-
-            // Ordenamos la lista de alumnos alfabeticamente por Apellido usando LINQ
+            // Ordenar la lista de alumnos alfabeticamente por Apellido usando LINQ
             List<Alumno> alumnosOrdenados = alumnos.OrderBy(a => a.Apellido).ToList();
 
             GenerarReporteAlumnosPorApellido(alumnosOrdenados);
-            
-            Console.WriteLine("\nPresione una tecla para volver al menu principal...");
-            Console.ReadKey();
         }
 
         public static void GenerarReporteAlumnosPorApellido(List<Alumno> alumnos)
@@ -79,8 +71,8 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 {
                     if (!esPrimerGrupo)
                     {
-                        sb.AppendLine("-------------------------------");
                         sb.AppendLine($"-> Subtotal {apellidoActual.ToUpper()}: {cantidadPorApellido} alumno(s)");
+                        sb.AppendLine("-------------------------------");
                     }
 
                     apellidoActual = alumno.Apellido;
@@ -96,13 +88,14 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 sb.AppendLine($"Documento: {alumno.Doc}" );
                 sb.AppendLine($"Email: {alumno.Email}");
                 sb.AppendLine($"Telefono: {alumno.Tel}");
+                sb.AppendLine("");
                 cantidadPorApellido++;
             }
 
             if (!esPrimerGrupo)
             {
-                sb.AppendLine("-------------------------------");
                 sb.AppendLine($"-> Subtotal {apellidoActual.ToUpper()}: {cantidadPorApellido} alumno(s)");
+                sb.AppendLine("-------------------------------");
             }
 
             sb.AppendLine("\n===============================");
@@ -134,15 +127,10 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 nombreArchivo = Console.ReadLine();
             } while (string.IsNullOrWhiteSpace(nombreArchivo) || !GestorArchivos.EsNombreDeArchivoValido(nombreArchivo));
 
-            string fullPath = Path.Combine(GestorArchivos.FolderPath, nombreArchivo + ".txt");
+            string fullPath = nombreArchivo + ".txt";
 
             try
             {
-                if (!Directory.Exists(GestorArchivos.FolderPath))
-                {
-                    Directory.CreateDirectory(GestorArchivos.FolderPath);
-                }
-
                 File.WriteAllText(fullPath, contenidoReporte);
                 Console.WriteLine($"\nReporte guardado exitosamente en: {fullPath}");
             }

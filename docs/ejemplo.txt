@@ -1,3 +1,0 @@
-En esta carpeta va a estar la documentacion:
-    - Manual de Usuario
-    - Documentacion tecnica

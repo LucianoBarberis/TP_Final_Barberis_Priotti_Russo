@@ -41,7 +41,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
             if(File.Exists(Path.Combine(FolderPath, $"{fileName}.{fileFormat}")))
             {
                 Console.WriteLine($"El Archivo {fileName}.{fileFormat} ya existe, si continuas se sobreescribira la informacio. (S/n)");
-                if(Console.ReadLine().ToLower() == "n")
+                if(Console.ReadLine()?.ToLower() == "n")
                 {
                     return;
                 }
@@ -102,7 +102,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                     case "txt": SaveFile.saveInTxt(AlumnosACargar, pathForSave) ;break;
                     case "csv": SaveFile.saveInCsv(AlumnosACargar, pathForSave);break;
                     case "json": SaveFile.saveInJson(AlumnosACargar, pathForSave);break;
-                    case "xml": Console.WriteLine("Arreglar Implementacion");break;
+                    case "xml": SaveFile.saveInXml(AlumnosACargar, pathForSave);break;
                 }
                 Console.WriteLine("Archivo Creado Correctamente!!!");
             }
@@ -147,7 +147,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 return true;
             }
             
-            if(fileName.EndsWith(".xls"))
+            if(fileName.EndsWith(".xml"))
             {
                 return true;
             }
@@ -155,7 +155,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
         }
         public static void ReadFile()
         {
-            Alumno alumno;
+            Alumno? alumno;
             string? fileName;
             List<Alumno> alumnoList = new List<Alumno>();
 
@@ -215,7 +215,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 string[] lineas = File.ReadAllLines(fullPath);
                 alumnoList.Clear();
 
-                foreach (string linea in lineas)
+                foreach (string linea in lineas.Skip(1))
                 {
                     if (string.IsNullOrEmpty(linea)) continue;
 
@@ -225,7 +225,6 @@ namespace RussoPriottiBarberis_GestorAlumnos
                         alumnoList.Add(alumno);
                     }
                 }
-                alumnoList.RemoveAt(0); // Eliminamos el encabezado
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Telefono |");
                 for (int i = 0; i < alumnoList.Count; i++)
@@ -243,7 +242,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
             {
                 string json = File.ReadAllText(fullPath);
                 alumnoList.Clear();
-                alumnoList = JsonSerializer.Deserialize<List<Alumno>>(json);
+                alumnoList = JsonSerializer.Deserialize<List<Alumno>>(json) ?? new List<Alumno>();
                 Console.WriteLine("==============================================================");
                 Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Teléfono |");
                 for(int i = 0; i < alumnoList.Count; i++)
@@ -259,7 +258,34 @@ namespace RussoPriottiBarberis_GestorAlumnos
             }
             else if(fileName.EndsWith(".xml"))
             {
-                // To Do
+                try
+                {
+                    System.Xml.Serialization.XmlSerializer serializer = new System.Xml.Serialization.XmlSerializer(typeof(List<Alumno>));
+                    using (StreamReader reader = new StreamReader(fullPath))
+                    {
+                        List<Alumno>? result = (List<Alumno>?)serializer.Deserialize(reader);
+                        if (result != null)
+                        {
+                            alumnoList = result;
+                        }
+                    }
+                    Console.WriteLine("==============================================================");
+                    Console.WriteLine("| Legajo | Apellido | Nombre | Nro. Doc. | Email | Teléfono |");
+                    for(int i = 0; i < alumnoList.Count; i++)
+                    {
+                        Console.WriteLine($"| {alumnoList[i].Legajo} | {alumnoList[i].Apellido} | {alumnoList[i].Nombre} | {alumnoList[i].Doc} | {alumnoList[i].Email} | {alumnoList[i].Tel}");
+                        if ((i + 1) % 20 == 0)
+                        {
+                            Console.WriteLine("\nPresione una tecla para continuar...");
+                            Console.ReadKey();
+                        }
+                    }
+                    Console.WriteLine("==============================================================");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error al leer el archivo XML: " + ex.Message);
+                }
             }
 
             Console.WriteLine("Total de alumnos: " + alumnoList.Count());
@@ -282,7 +308,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
             string fullPath = Path.Combine(FolderPath, fileName);
 
             // Cargar todos los registros en memoria
-            alumnosEnMemoria = Conversor.FromFileToObj(fileName);
+            alumnosEnMemoria = Conversor.FromFileToObj(fileName) ?? new List<Alumno>();
 
             if (!EsFormatoValido(fileName))
             {
@@ -534,7 +560,6 @@ namespace RussoPriottiBarberis_GestorAlumnos
                     }
                     else if(fileName.EndsWith(".csv"))
                     {
-                        alumnos.RemoveAt(0); // Eliminamos el encabezado ya que en saveInCsv se va a agregar nuevamente
                         SaveFile.saveInCsv(alumnos, pathForSave);
                     }
                     else if (fileName.EndsWith(".json"))
@@ -577,7 +602,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
             }
 
             // Verificamos que la extencion sea valida para evitar eliminar archivos no deseados
-            if (!fileName.EndsWith(".txt") && !fileName.EndsWith(".csv") && !fileName.EndsWith(".json") && !fileName.EndsWith(".xls"))
+            if (!fileName.EndsWith(".txt") && !fileName.EndsWith(".csv") && !fileName.EndsWith(".json") && !fileName.EndsWith(".xml"))
             {
                 Console.WriteLine("El archivo no contiene ninguna extencion valida...");
                 return;

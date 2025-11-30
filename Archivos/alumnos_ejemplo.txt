@@ -1,0 +1,10 @@
+001 | Barberis | Luciano | 46738423 | LBarberis@gmail.com | 34523212
+002 | Russo | Nazareno | 46587645 | NRusso@gmail.com | 32523563
+003 | Priotti | Lautaro | 46579657 | LPriotti@gmail.com | 534675843
+004 | Perez | Juan | 4753432 | JPerez@gmail.com | 63723423
+005 | Perez | Pepe | 63732 | PPerez@gmail.com | 63643232
+006 | Russo | Juan | 5236233 | JRusso@gmail.com | 636742342
+007 | Perez | Julian | 3258233 | JPerez2@gmail.com | 737232423
+008 | Barberis | Martin | 6436343 | MBarberis@gmail.com | 6323252
+009 | Priotti | Mateo' | 47365354 | MPriotti@gmail.com | 533423423
+010 | Gonzales | Jorge | 454335343 | JGonzales@gmail.com | 45326323

@@ -59,13 +59,12 @@ namespace RussoPriottiBarberis_GestorAlumnos.src
             }
         }
 
-        // TODO: Arreglar Implementacion
         public static void saveInXml(List<Alumno> Alumnos, string FileName)
         {
             try
             {
                 XmlSerializer serializer = new XmlSerializer(typeof(List<Alumno>));
-                using (StreamWriter writer = new StreamWriter($"{FileName}.xml"))
+                using (StreamWriter writer = new StreamWriter(FileName + ".xml"))
                 {
                     serializer.Serialize(writer, Alumnos);
                 }

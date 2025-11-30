@@ -4,12 +4,14 @@ using System.Text.RegularExpressions;
 
 public class Alumno
 {
-	public string Legajo { get; set; }
-	public string Apellido { get; set; }
-	public string Nombre { get; set; }
-	public string Doc { get; set; }
-	public string Email { get; set; }
-	public string Tel { get; set; }
+	public string Legajo { get; set; } = string.Empty;
+	public string Apellido { get; set; } = string.Empty;
+	public string Nombre { get; set; } = string.Empty;
+	public string Doc { get; set; } = string.Empty;
+	public string Email { get; set; } = string.Empty;
+	public string Tel { get; set; } = string.Empty;
+
+    public Alumno() { }
 
 	public Alumno(string legajo, string apellido, string nombre, string doc, string email, string tel)
 	{
@@ -82,7 +84,7 @@ public class Alumno
 	{
 		return $"{Legajo},{Apellido},{Nombre},{Doc},{Email},{Tel}";
 	}
-    public static Alumno FromTxtToObj(string linea)
+    public static Alumno? FromTxtToObj(string linea)
     {
         string[] partes = linea.Split(" | ");
         if (partes.Length == 0 || partes.Length != 6) 
@@ -108,7 +110,7 @@ public class Alumno
             return null;
         }
     }
-    public static Alumno FromCsvToObj(string linea)
+    public static Alumno? FromCsvToObj(string linea)
     {
         string[] partes = linea.Split(",");
         if (partes.Length != 6)

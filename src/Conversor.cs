@@ -10,7 +10,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
         {
             string? fileName;
             string? fileFormatToParse;
-            List<Alumno> alumnos = new List<Alumno>();
+            List<Alumno>? alumnos = new List<Alumno>();
 
             do
             {
@@ -30,12 +30,12 @@ namespace RussoPriottiBarberis_GestorAlumnos
 
             if(alumnos == null || alumnos.Count == 0)
             {
-                Console.WriteLine("Error: No se pudieron cargar alumnos o el archivo esta vaci�o.");
+                Console.WriteLine("Error: No se pudieron cargar alumnos o el archivo esta vaci�o.");
                 return;
             }
 
             string extensionActual = Path.GetExtension(fileName).ToLower();
-            fileFormatToParse = null; // Initialize here for wider scope
+            fileFormatToParse = null;
             bool esValidoElFormatoDeDestino = false;
 
             Console.Clear();
@@ -45,11 +45,11 @@ namespace RussoPriottiBarberis_GestorAlumnos
             do
             {
                 Console.WriteLine("\nSeleccione el formato de destino (.txt/.csv/.json/.xml):");
-                fileFormatToParse = Console.ReadLine()?.ToLower().Trim();
+                fileFormatToParse = Console.ReadLine()?.ToLower();
 
                 if (string.IsNullOrEmpty(fileFormatToParse))
                 {
-                    Console.WriteLine("Error: El formato no puede estar vacío.");
+                    Console.WriteLine("Error: El formato no puede estar vacio.");
                     continue;
                 }
 
@@ -87,13 +87,13 @@ namespace RussoPriottiBarberis_GestorAlumnos
                     SaveFile.saveInXml(alumnos, nuevaRuta);break;
             }
             
-            Console.WriteLine("Conversión finalizada exitosamente.");
+            Console.WriteLine("Conversion finalizada exitosamente.");
         }
 
-        public static List<Alumno> FromFileToObj(string fileName)
+        public static List<Alumno>? FromFileToObj(string fileName)
         {
             List<Alumno> alumnos = new List<Alumno>();
-            Alumno alumno;
+            Alumno? alumno;
             string fullPath = Path.Combine(GestorArchivos.FolderPath, fileName);
 
             if (!File.Exists(fullPath))
@@ -122,7 +122,8 @@ namespace RussoPriottiBarberis_GestorAlumnos
                 string[] lineas = File.ReadAllLines(fullPath);
                 alumnos.Clear();
 
-                foreach (string linea in lineas)
+                // Saltamos el encabezado (primera linea)
+                foreach (string linea in lineas.Skip(1))
                 {
                     if (string.IsNullOrEmpty(linea)) continue;
 
@@ -137,7 +138,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
             if (fileName.EndsWith(".json"))
             {
                 string json = File.ReadAllText(fullPath);
-                List<Alumno> alumnosFromJson = JsonSerializer.Deserialize<List<Alumno>>(json);
+                List<Alumno>? alumnosFromJson = JsonSerializer.Deserialize<List<Alumno>>(json);
                 if(alumnosFromJson != null)
                 {
                     return alumnosFromJson;
@@ -146,7 +147,7 @@ namespace RussoPriottiBarberis_GestorAlumnos
             }
             if (fileName.EndsWith(".xml"))
             {
-                // To Do
+                
                 return null;
             }
             return null;

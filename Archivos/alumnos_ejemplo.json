@@ -1,0 +1,90 @@
+[
+  {
+    "Legajo": "001",
+    "Apellido": "Barberis",
+    "Nombre": "Luciano",
+    "Doc": "46738423",
+    "Email": "LBarberis@gmail.com",
+    "Tel": "34523212"
+  },
+  {
+    "Legajo": "002",
+    "Apellido": "Russo",
+    "Nombre": "Nazareno",
+    "Doc": "46587645",
+    "Email": "NRusso@gmail.com",
+    "Tel": "32523563"
+  },
+  {
+    "Legajo": "003",
+    "Apellido": "Priotti",
+    "Nombre": "Lautaro",
+    "Doc": "46579657",
+    "Email": "LPriotti@gmail.com",
+    "Tel": "534675843"
+  },
+  {
+    "Legajo": "004",
+    "Apellido": "Perez",
+    "Nombre": "Juan",
+    "Doc": "4753432",
+    "Email": "JPerez@gmail.com",
+    "Tel": "63723423"
+  },
+  {
+    "Legajo": "005",
+    "Apellido": "Perez",
+    "Nombre": "Pepe",
+    "Doc": "63732",
+    "Email": "PPerez@gmail.com",
+    "Tel": "63643232"
+  },
+  {
+    "Legajo": "006",
+    "Apellido": "Russo",
+    "Nombre": "Juan",
+    "Doc": "5236233",
+    "Email": "JRusso@gmail.com",
+    "Tel": "636742342"
+  },
+  {
+    "Legajo": "007",
+    "Apellido": "Perez",
+    "Nombre": "Julian",
+    "Doc": "3258233",
+    "Email": "JPerez2@gmail.com",
+    "Tel": "737232423"
+  },
+  {
+    "Legajo": "008",
+    "Apellido": "Barberis",
+    "Nombre": "Martin",
+    "Doc": "6436343",
+    "Email": "MBarberis@gmail.com",
+    "Tel": "6323252"
+  },
+  {
+    "Legajo": "009",
+    "Apellido": "Priotti",
+    "Nombre": "Mateo\u0027",
+    "Doc": "47365354",
+    "Email": "MPriotti@gmail.com",
+    "Tel": "533423423"
+  },
+  {
+    "Legajo": "010",
+    "Apellido": "Gonzales",
+    "Nombre": "Jorge",
+    "Doc": "454335343",
+    "Email": "JGonzales@gmail.com",
+    "Tel": "45326323"
+  },
+  {
+    "Legajo": "011",
+    "Apellido": "Martinez",
+    "Nombre": "Pedro",
+    "Doc": "454335343",
+    "Email": "PMartinez@gmail.com",
+    "Tel": "45326323"
+  }
+]
