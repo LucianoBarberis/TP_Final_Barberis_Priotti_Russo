@@ -1,9 +1,11 @@
-# Gestor de Alumnos - TP Final Programación y Estructura de Datos
+# Gestor de Alumnos - TP Final ProgramaciÃ³n y Estructura de Datos
 
 **Integrantes:** Luciano Barberis, Nazareno Russo, Lautaro Priotti.
 
-## Descripción
-Esta es una aplicacion de consola desarrollada en C# que permite la gestion de alumnos. El sistema esta diseñado para almacenar, leer, editar y convertir registros de estudiantes utilizando multiples formatos de archivo.
+## DescripciÃ³n
+Esta es una aplicacion de consola desarrollada en C# que permite la gestion de alumnos. El sistema esta diseÃ±ado para almacenar, leer, editar y convertir registros de estudiantes utilizando multiples formatos de archivo.
+
+[Link a Demo de la app](https://www.youtube.com/watch?v=MnUoSPwbo3A)
 
 ### Caracteristicas Principales
 - **Gestion de Archivos:** Creacion, Lectura, Edicion y Eliminacion.
@@ -25,8 +27,8 @@ dotnet build
 
 Esto intalara las dependencias necesarias y compilara el codigo fuente, asegurando que no existan errores de sintaxis.
 
-## Instrucciones de Uso BÃ¡sico
-Para ejecutar la aplicacion, utilice el siguiente comando desde la rai­z del proyecto:
+## Instrucciones de Uso BÃƒÂ¡sico
+Para ejecutar la aplicacion, utilice el siguiente comando desde la raiÂ­z del proyecto:
 
 ```bash
 dotnet run
